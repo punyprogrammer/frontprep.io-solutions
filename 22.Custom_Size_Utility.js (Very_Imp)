@@ -1,0 +1,25 @@
+/**
+ * @param {Array|Object|string|Map|Set} collection - The collection to measure
+ * @returns {number} - The number of elements in the collection
+ */
+function size(collection) {
+  // null handling
+  if (collection === null || collection === undefined) return 0;
+  //  array and string handling
+  if (Array.isArray(collection) || typeof collection === 'string')
+    return collection.length;
+  // object types
+  const objectType = Object.prototype.toString.call(collection);
+  // for maps and arrays
+  if (objectType === '[object Map]' || objectType === '[object Set]')
+  // Alternate can also use collection instanceof Set || Map ||WeakMap
+    return collection.size;
+  // regular objects
+  if (typeof collection === 'object') {
+    return Object.keys(collection).length;
+  }
+  // prmitive
+  return 0;
+}
+
+console.log(size({})); // Expected: 0
