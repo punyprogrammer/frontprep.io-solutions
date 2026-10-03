@@ -1,0 +1,48 @@
+const statesByCountry = {
+  USA: ['CA', 'NY', 'WA'],
+  India: ['MH', 'KA'],
+};
+
+const citiesByState = {
+  CA: ['Los Angeles', 'San Francisco', 'San Diego'],
+  NY: ['New York City', 'Buffalo', 'Rochester'],
+  WA: ['Seattle', 'Spokane', 'Tacoma'],
+  MH: ['Mumbai', 'Pune'],
+  KA: ['Bengaluru', 'Mysuru'],
+};
+
+function getStates(country) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(statesByCountry[country] || []), 100);
+  });
+}
+
+function getCities(state) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(citiesByState[state]), 100);
+  });
+}
+
+/**
+ * Fetch all cities across every state in a country.
+ * @param {string} country
+ * @returns {Promise<string[]>}
+ */
+async function getAllCities(country) {
+  try {
+    // Fetch states for the country.
+    const states = await getStates(country);
+
+    // Fetch cities for all states concurrently.
+    const cities = await Promise.all(states.map((state) => getCities(state)));
+
+    // Flatten the array of city arrays.
+    return cities.flat();
+  } catch (error) {
+    console.error(`Failed to fetch cities for ${country}:`, error);
+
+    // Re-throw so the caller knows the operation failed.
+    throw error;
+  }
+}
+
